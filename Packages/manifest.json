@@ -8,6 +8,8 @@
     "com.unity.textmeshpro": "2.0.1",
     "com.unity.timeline": "1.2.14",
     "com.unity.ugui": "1.0.0",
+    "com.unity.xr.interaction.toolkit": "0.9.4-preview",
+    "com.unity.xr.interactionsubsystems": "1.0.1",
     "com.unity.xr.management": "3.2.6",
     "com.unity.xr.oculus": "1.3.3",
     "com.unity.modules.ai": "1.0.0",
