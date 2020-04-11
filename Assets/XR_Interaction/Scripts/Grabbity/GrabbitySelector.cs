@@ -294,7 +294,7 @@ namespace prvncher.XR_Interaction.Grabbity
                 Vector3 targetVelocity = (toTarget + Vector3.up * verticalOffsetMagnitude) * _flickMagnitude * 2f;
                 float targetMagnitude = targetVelocity.magnitude;
 
-                _selectedGrabbable.RigidBodyComponent.velocity = targetVelocity.normalized * Mathf.Clamp(targetMagnitude, 0.5f, Mathf.Max(toTargetMagnitude, 8f));
+                _selectedGrabbable.RigidBodyComponent.velocity = targetVelocity.normalized * Mathf.Clamp(targetMagnitude, 0.5f, Mathf.Max(toTargetMagnitude, 6f));
             }
         }
 
