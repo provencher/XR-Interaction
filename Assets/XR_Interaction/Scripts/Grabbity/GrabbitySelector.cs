@@ -58,6 +58,9 @@ namespace prvncher.XR_Interaction.Grabbity
 
         public UnityEvent LeftHandSelected = new UnityEvent();
 
+        private Vector3 _leftHandPoseAtGrip = Vector3.zero;
+        private Vector3 _rightHandPoseAtGrip = Vector3.zero;
+
         private void OnDestroy()
         {
             // Clear out static data on destroy
@@ -71,6 +74,8 @@ namespace prvncher.XR_Interaction.Grabbity
 
         private bool PrimaryIsGripping => _rightHandIsPrimary ? _rightGripPressed : _leftGripPressed;
 
+        #region Input management
+
         private bool _leftGripPressed = false;
         public void LeftGripInputChanged(bool isPressed)
         {
@@ -78,6 +83,7 @@ namespace prvncher.XR_Interaction.Grabbity
             if (isPressed)
             {
                 _rightHandIsPrimary = false;
+                _leftHandPoseAtGrip = _leftHand.transform.position;
             }
         }
 
@@ -86,11 +92,25 @@ namespace prvncher.XR_Interaction.Grabbity
         {
             _rightGripPressed = isPressed;
             if (isPressed)
-            { 
+            {
                 _rightHandIsPrimary = true;
+                _rightHandPoseAtGrip = _rightHand.transform.position;
             }
         }
 
+        private Vector3 _leftHandVelocity = Vector3.zero;
+        public void LeftHandVelocityChanged(Vector3 newVelocity)
+        {
+            _leftHandVelocity = newVelocity;
+        }
+
+        private Vector3 _rightHandVelocity = Vector3.zero;
+        public void RightHandVelocityChanged(Vector3 newVelocity)
+        {
+            _rightHandVelocity = newVelocity;
+        }
+
+        #endregion
         // Interaction system checks
         // Managed by XR Direct Interactor events
         #region XR Interaction Management
@@ -102,7 +122,7 @@ namespace prvncher.XR_Interaction.Grabbity
         }
 
         private bool _leftHandGrabbing = false;
-  
+
         /// <param name="isGrabbing"></param>
         public void LeftHandGrabbing(bool isGrabbing)
         {
@@ -158,13 +178,14 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 Selection();
             }
-            else
+            else if (CurrentGrabbable != null)
             {
                 if (!_objectInFlight)
                 {
                     DetectFlick();
                 }
-                else
+
+                if (_objectInFlight)
                 {
                     HomeToHand();
                 }
@@ -218,15 +239,35 @@ namespace prvncher.XR_Interaction.Grabbity
             }
         }
 
+        private float _flickMagnitude = 0f;
         private void DetectFlick()
         {
-            // If detect flick
-            _lastFlickTime = Time.time;
+            Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
+
+            float velocityMagnitude = handVelocity.magnitude;
+            if (velocityMagnitude > 3)
+            {
+                _flickMagnitude = velocityMagnitude;
+                _objectInFlight = true;
+
+                if (CurrentGrabbable != null)
+                {
+                    Vector3 positionTarget = _rightHandIsPrimary ? _rightHand.transform.position : _leftHand.transform.position;
+                    CurrentGrabbable.RigidBodyComponent.velocity =
+                        (positionTarget - CurrentGrabbable.transform.position).normalized * _flickMagnitude;
+                }
+            }
+
+            if (_objectInFlight)
+            {
+                // If detect flick
+                _lastFlickTime = Time.time;
+            }
         }
 
         private void HomeToHand()
         {
-
+            
         }
     }
 }

@@ -11,6 +11,11 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
     {
     }
 
+    [Serializable]
+    public class Vector3UnityEvent : UnityEvent<Vector3>
+    {
+    }
+
     public class XRControllerInput : MonoBehaviour
     {
         private InputDevice _leftController;
@@ -25,6 +30,13 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
         private bool _lastRightGripIsPressed = false;
         public BoolUnityEvent _rightGripPressed = new BoolUnityEvent();
 
+
+        private Vector3 _leftVelocity = Vector3.zero;
+        public Vector3UnityEvent LeftVelocityUpdate = new Vector3UnityEvent();
+
+        private Vector3 _rightVelocity = Vector3.zero;
+        public Vector3UnityEvent RightVelocityUpdate = new Vector3UnityEvent();
+
         private void OnEnable()
         {
             InputDevices.deviceConnected += RegisterDevices;
@@ -37,6 +49,7 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
         private void OnDisable()
         {
             InputDevices.deviceConnected -= RegisterDevices;
+
         }
 
         void RegisterDevices(InputDevice connectedDevice)
@@ -113,6 +126,25 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
                 _rightGripPressed.Invoke(rightGripIsPressed);
                 _lastRightGripIsPressed = rightGripIsPressed;
             }
+
+            // Polling velocity requires the node states... Unity is weird
+            List<XRNodeState> nodes = new List<XRNodeState>();
+            InputTracking.GetNodeStates(nodes);
+
+            foreach (XRNodeState ns in nodes)
+            {
+                if (ns.nodeType == XRNode.LeftHand)
+                {
+                    ns.TryGetVelocity(out _leftVelocity);
+                }
+                if (ns.nodeType == XRNode.RightHand)
+                {
+                    ns.TryGetVelocity(out _rightVelocity);
+                }
+            }
+
+            LeftVelocityUpdate.Invoke(_leftVelocity);
+            RightVelocityUpdate.Invoke(_rightVelocity);
         }
     }
 }
