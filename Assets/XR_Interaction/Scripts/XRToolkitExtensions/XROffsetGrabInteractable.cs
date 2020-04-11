@@ -18,6 +18,7 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
             StoreInteractor(interactor);
             MatchAttachmentPoints(interactor);
         }
+
         protected override void OnSelectExit(XRBaseInteractor interactor)
         {
             base.OnSelectExit(interactor);
