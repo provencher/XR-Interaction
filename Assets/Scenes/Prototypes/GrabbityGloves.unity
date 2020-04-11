@@ -121,6 +121,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &163834957 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49,
+    type: 3}
+  m_PrefabInstance: {fileID: 7559847050902601283}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b43b0b7872024447a5c193870620353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &170171480
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,10 +465,10 @@ GameObject:
   - component: {fileID: 1112845338}
   - component: {fileID: 1112845337}
   - component: {fileID: 1112845340}
-  - component: {fileID: 1112845341}
   - component: {fileID: 1112845339}
   - component: {fileID: 1112845343}
   - component: {fileID: 1112845342}
+  - component: {fileID: 1112845341}
   m_Layer: 0
   m_Name: Hammer
   m_TagString: Untagged
@@ -615,8 +627,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1112845341
-BoxCollider:
+--- !u!64 &1112845341
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -625,9 +637,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.29847434, y: 0.10930477, z: 0.03000004}
-  m_Center: {x: -0.000091433525, y: 2.7249314e-12, z: 0.00000005960008}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 68a66fb5a71f8204a8dcb613c97d1fa8, type: 3}
 --- !u!114 &1112845342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1147,10 +1160,10 @@ GameObject:
   - component: {fileID: 33367184338962800}
   - component: {fileID: 23987358165453488}
   - component: {fileID: 1212596423539687}
-  - component: {fileID: 1212596423539685}
   - component: {fileID: 1212596423539686}
   - component: {fileID: 1212596423539689}
   - component: {fileID: 1212596423539688}
+  - component: {fileID: 1212596423539685}
   m_Layer: 0
   m_Name: Paint 1G Lid
   m_TagString: Untagged
@@ -1158,8 +1171,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &1212596423539685
-BoxCollider:
+--- !u!64 &1212596423539685
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1168,9 +1181,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.15785287, y: 0.006000023, z: 0.15785281}
-  m_Center: {x: -0.00000017881393, y: -0.0019998907, z: 0.00000008940697}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300004, guid: b451a052397f03c4f8a04d915d1c0492, type: 3}
 --- !u!114 &1212596423539686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1298,10 +1312,10 @@ GameObject:
   - component: {fileID: 33809664489759636}
   - component: {fileID: 23009736946318486}
   - component: {fileID: 1218026470195379}
-  - component: {fileID: 1218026470195377}
   - component: {fileID: 1218026470195378}
   - component: {fileID: 1218026470195381}
   - component: {fileID: 1218026470195380}
+  - component: {fileID: 1218026470195377}
   m_Layer: 0
   m_Name: Hammer
   m_TagString: Untagged
@@ -1309,8 +1323,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &1218026470195377
-BoxCollider:
+--- !u!64 &1218026470195377
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1319,9 +1333,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.29847455, y: 0.10930485, z: 0.030000072}
-  m_Center: {x: -0.000091671995, y: 0.0000002384322, z: -0.00000005961185}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 68a66fb5a71f8204a8dcb613c97d1fa8, type: 3}
 --- !u!114 &1218026470195378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1481,10 +1496,10 @@ GameObject:
   - component: {fileID: 33263640447606282}
   - component: {fileID: 23667841268463830}
   - component: {fileID: 1276976431564021}
-  - component: {fileID: 1276976431564019}
   - component: {fileID: 1276976431564020}
   - component: {fileID: 1276976431564023}
   - component: {fileID: 1276976431564022}
+  - component: {fileID: 1276976431564019}
   m_Layer: 0
   m_Name: Safety Goggles
   m_TagString: Untagged
@@ -1492,8 +1507,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &1276976431564019
-BoxCollider:
+--- !u!64 &1276976431564019
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1502,9 +1517,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.1837308, y: 0.077605225, z: 0.16621949}
-  m_Center: {x: -0.00008616599, y: 0.038963784, z: -0.0119853495}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 6296e48663fd7ad46b1a2af507f871cf, type: 3}
 --- !u!114 &1276976431564020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1682,11 +1698,11 @@ GameObject:
   - component: {fileID: 4645730838495630}
   - component: {fileID: 33482302768704232}
   - component: {fileID: 23463846714058914}
-  - component: {fileID: 1447662173815675}
   - component: {fileID: 1447662173815674}
   - component: {fileID: 1447662173815673}
   - component: {fileID: 1447662173815677}
   - component: {fileID: 1447662173815676}
+  - component: {fileID: 1447662173815675}
   m_Layer: 0
   m_Name: Brush
   m_TagString: Untagged
@@ -1784,8 +1800,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1447662173815675
-BoxCollider:
+--- !u!64 &1447662173815675
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1794,9 +1810,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.10865517, y: 0.21970786, z: 0.016461803}
-  m_Center: {x: -0.0003259663, y: 0.10985405, z: -0.00011121021}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: aed8c47425ab91f4eb06ce6fe47c3e4e, type: 3}
 --- !u!114 &1447662173815676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1833,11 +1850,11 @@ GameObject:
   - component: {fileID: 4914772006747052}
   - component: {fileID: 33644865886041626}
   - component: {fileID: 23051422920405670}
-  - component: {fileID: 1467781690138419}
   - component: {fileID: 1467781690138418}
   - component: {fileID: 1467781690138417}
   - component: {fileID: 1467781690138421}
   - component: {fileID: 1467781690138420}
+  - component: {fileID: 1467781690138419}
   m_Layer: 0
   m_Name: Paint 1G Bucket
   m_TagString: Untagged
@@ -1935,8 +1952,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1467781690138419
-BoxCollider:
+--- !u!64 &1467781690138419
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1945,9 +1962,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.20752838, y: 0.19999999, z: 0.17245094}
-  m_Center: {x: 0.00000035762787, y: 0.099999994, z: 0.0012256249}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300002, guid: b451a052397f03c4f8a04d915d1c0492, type: 3}
 --- !u!114 &1467781690138420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2171,11 +2189,11 @@ GameObject:
   - component: {fileID: 4773312980792730}
   - component: {fileID: 33476401823664632}
   - component: {fileID: 23514317459957188}
-  - component: {fileID: 1638715120521603}
   - component: {fileID: 1638715120521602}
   - component: {fileID: 1638715120521601}
   - component: {fileID: 1638715120521605}
   - component: {fileID: 1638715120521604}
+  - component: {fileID: 1638715120521603}
   m_Layer: 0
   m_Name: Magnetic Level
   m_TagString: Untagged
@@ -2461,10 +2479,10 @@ GameObject:
   - component: {fileID: 33009518960564148}
   - component: {fileID: 23910509487175628}
   - component: {fileID: 1776058156694295}
-  - component: {fileID: 1776058156694293}
   - component: {fileID: 1776058156694294}
   - component: {fileID: 1776058156694297}
   - component: {fileID: 1776058156694296}
+  - component: {fileID: 1776058156694293}
   m_Layer: 0
   m_Name: Paint 5G Bucket
   m_TagString: Untagged
@@ -2472,8 +2490,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &1776058156694293
-BoxCollider:
+--- !u!64 &1776058156694293
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2482,9 +2500,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.34893903, y: 0.38, z: 0.30211163}
-  m_Center: {x: -0.00000005215406, y: 0.19, z: 0.0010558}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: b451a052397f03c4f8a04d915d1c0492, type: 3}
 --- !u!114 &1776058156694294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2711,11 +2730,11 @@ GameObject:
   - component: {fileID: 4546305559781920}
   - component: {fileID: 33215433873282314}
   - component: {fileID: 23480387460364724}
-  - component: {fileID: 1973016424351837}
   - component: {fileID: 1973016424351836}
   - component: {fileID: 1973016424351835}
   - component: {fileID: 1973016424351839}
   - component: {fileID: 1973016424351838}
+  - component: {fileID: 1973016424351837}
   m_Layer: 0
   m_Name: Safety Hat
   m_TagString: Untagged
@@ -2813,8 +2832,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1973016424351837
-BoxCollider:
+--- !u!64 &1973016424351837
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2823,9 +2842,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.22457546, y: 0.1729822, z: 0.27196667}
-  m_Center: {x: 0.00024841336, y: -0.08617912, z: 0.015452859}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 9d0d902f71acfe646a46cb625f815a49, type: 3}
 --- !u!114 &1973016424351838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2862,11 +2882,11 @@ GameObject:
   - component: {fileID: 4022029980092606}
   - component: {fileID: 33261904114324022}
   - component: {fileID: 23618812566636564}
-  - component: {fileID: 1980700057648169}
   - component: {fileID: 1980700057648168}
   - component: {fileID: 1980700057648167}
   - component: {fileID: 1980700057648171}
   - component: {fileID: 1980700057648170}
+  - component: {fileID: 1980700057648169}
   m_Layer: 0
   m_Name: Jigsaw
   m_TagString: Untagged
@@ -2964,8 +2984,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &1980700057648169
-BoxCollider:
+--- !u!64 &1980700057648169
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2974,9 +2994,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.089999996, y: 0.286013, z: 0.25800937}
-  m_Center: {x: -0.00000047683716, y: 0.09300278, z: -0.0018103793}
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 8b73e8872ca76104bbca4ee2b704a1b4, type: 3}
 --- !u!114 &1980700057648170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5096,6 +5117,196 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: XRRig
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverExit.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverExit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163834957}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RightHandGrabbing
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163834957}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LeftHandGrabbing
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593499, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverExit.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverExit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnHoverEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163834957}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163834957}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RightHandGrabbing
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RightHandGrabbing
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectExit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665365, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_OnSelectEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b602c227d1c7e34478246975c1dfba49, type: 3}

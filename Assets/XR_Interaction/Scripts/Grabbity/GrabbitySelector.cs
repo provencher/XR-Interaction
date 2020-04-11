@@ -29,7 +29,20 @@ namespace prvncher.XR_Interaction.Grabbity
 
         private GrabbityGrabbable _currentGrabbable = null;
 
+        [Header("Thresholds")]
+        [SerializeField]
+        private float _initialSelectionAngleThreshold = 45f;
 
+        [SerializeField]
+        private float _selectionChangedAngleThreshold = 30f;
+
+        [SerializeField]
+        private float _deselectionTreshold = 50f;
+
+        [SerializeField]
+        private float _flickDelay = 1f;
+
+        [Header("Pose transforms")]
         [SerializeField]
         private Transform _headpose = null;
 
@@ -45,66 +58,161 @@ namespace prvncher.XR_Interaction.Grabbity
             _grabbables.Clear();
         }
 
+        private bool _objectInFlight = false;
+
+        // Primary hand input is determined by last pressed grip key
+        private bool _rightHandIsPrimary = true;
+
+        private bool PrimaryIsGripping => _rightHandIsPrimary ? _rightGripPressed : _leftGripPressed;
+
         private bool _leftGripPressed = false;
         public void LeftGripInputChanged(bool isPressed)
         {
             _leftGripPressed = isPressed;
-            Debug.Log($"Left Grip {isPressed}");
+            if (isPressed)
+            {
+                _rightHandIsPrimary = false;
+            }
         }
 
         private bool _rightGripPressed = false;
         public void RightGripInputChanged(bool isPressed)
         {
             _rightGripPressed = isPressed;
-            Debug.Log($"Right Grip {isPressed}");
+            if (isPressed)
+            { 
+                _rightHandIsPrimary = true;
+            }
         }
 
+        // Interaction system checks
+        // Managed by XR Direct Interactor events
+        #region XR Interaction Management
+
+        private bool _rightHandGrabbing = false;
+        public void RightHandGrabbing(bool isGrabbing)
+        {
+            _rightHandGrabbing = isGrabbing;
+        }
+
+        private bool _leftHandGrabbing = false;
+  
+        /// <param name="isGrabbing"></param>
+        public void LeftHandGrabbing(bool isGrabbing)
+        {
+            _leftHandGrabbing = isGrabbing;
+        }
+
+        #endregion
+
+        public GrabbityGrabbable CurrentGrabbable
+        {
+            get => _currentGrabbable;
+            private set
+            {
+                if (_currentGrabbable != null)
+                {
+                    _currentGrabbable.OnObjectUnFocused();
+                }
+
+                _currentGrabbable = value;
+
+                if (value != null)
+                {
+                    _currentGrabbable.OnObjectFocused();
+                }
+            }
+        }
+
+        private float _lastFlickTime = 0f;
         private void Update()
         {
-            Transform grabbingHand = null;
+            // If we are not currently gripping, we allow the system to select a new target if the last flick was far enough in the past
+            if (_objectInFlight && (Time.time - _lastFlickTime) > _flickDelay)
+            {
+                _objectInFlight = false;
+            }
+
+            bool blockSelection = _leftHandGrabbing || _rightHandGrabbing;
+            if (blockSelection)
+            {
+                CurrentGrabbable = null;
+                return;
+            }
+
+            if (!PrimaryIsGripping && !_objectInFlight)
+            {
+                Selection();
+            }
+            else
+            {
+                if (!_objectInFlight)
+                {
+                    DetectFlick();
+                }
+                else
+                {
+                    HomeToHand();
+                }
+            }
+        }
+
+        private void Selection()
+        {
+            Transform grabbingHand = _rightHandIsPrimary ? _rightHand : _leftHand;
 
             float angleFromCamera = 360;
 
-            Vector3 cameraForward = _headpose.transform.forward;
-            Vector3 cameraPosition = _headpose.transform.position;
+            Vector3 sourceForward = grabbingHand.transform.forward;
+            Vector3 sourcePosition = grabbingHand.transform.position;
 
             GrabbityGrabbable newGrabbable = null;
+
+            float selectionThreshold = _currentGrabbable == null ? _deselectionTreshold : _initialSelectionAngleThreshold;
 
             // Iterate over visible grabbables
             foreach (var grabbable in _grabbables)
             {
                 // We consider a grabbable as viable if
-                // 1 - 
+                // 1 - Angle between controller forward, and object to controller vector, is less than selectionThreshold.
+                // 2 - Angle is the smallest available among all grabbable objects
 
-                Vector3 toGrabbable = grabbable.transform.position - cameraPosition;
-                float angleWithCamera = Vector3.Angle(toGrabbable, cameraForward);
+                Vector3 toGrabbable = grabbable.transform.position - sourcePosition;
+                float angleWithCamera = Vector3.Angle(toGrabbable, sourceForward);
 
-                if (angleWithCamera < 30 && angleWithCamera < angleFromCamera)
+                if (angleWithCamera < selectionThreshold && angleWithCamera < angleFromCamera)
                 {
                     angleFromCamera = angleWithCamera;
                     newGrabbable = grabbable;
                 }
             }
 
+            // If we have a new grabbable, we deselect the old one
             if (newGrabbable != null && newGrabbable != _currentGrabbable)
             {
-                if (_currentGrabbable != null)
-                {
-                    _currentGrabbable.OnObjectUnFocused();
-                }
-                _currentGrabbable = newGrabbable;
-                _currentGrabbable.OnObjectFocused();
+                CurrentGrabbable = newGrabbable;
             }
+            // If we have no grabbable, we assess if we should terminate all selection
             else if (newGrabbable == null && _currentGrabbable != null)
             {
-                Vector3 toGrabbable = _currentGrabbable.transform.position - cameraPosition;
-                float angleWithCamera = Vector3.Angle(toGrabbable, cameraForward);
-                if (angleWithCamera > 50)
+                Vector3 toGrabbable = _currentGrabbable.transform.position - sourcePosition;
+                float angleWithCamera = Vector3.Angle(toGrabbable, sourceForward);
+                if (angleWithCamera > _deselectionTreshold)
                 {
-                    _currentGrabbable.OnObjectUnFocused();
-                    _currentGrabbable = null;
+                    CurrentGrabbable = null;
                 }
             }
+        }
+
+        private void DetectFlick()
+        {
+            // If detect flick
+            _lastFlickTime = Time.time;
+        }
+
+        private void HomeToHand()
+        {
+
         }
     }
 }

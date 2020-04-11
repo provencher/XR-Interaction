@@ -686,9 +686,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b43b0b7872024447a5c193870620353, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _initialSelectionAngleThreshold: 45
+  _selectionChangedAngleThreshold: 30
+  _deselectionTreshold: 50
+  _flickDelay: 1
   _headpose: {fileID: 7559847049997679121}
-  _rightHand: {fileID: 7559847050563593493}
-  _leftHand: {fileID: 7559847051477665366}
+  _rightHand: {fileID: 7559847051477665366}
+  _leftHand: {fileID: 7559847050563593493}
 --- !u!114 &163834951
 MonoBehaviour:
   m_ObjectHideFlags: 0
