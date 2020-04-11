@@ -250,20 +250,31 @@ namespace prvncher.XR_Interaction.Grabbity
         }
 
         private float _flickMagnitude = 0f;
-
+        private float _peakMagnitude = 0f;
         private List<float> _velocitySamples = new List<float>();
-        
+
         private void DetectFlick()
         {
             Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
             float velocityMagnitude = handVelocity.magnitude;
 
             _velocitySamples.Add(velocityMagnitude);
+            if (_velocitySamples.Count > 10)
+            {
+                _velocitySamples.RemoveAt(0);
+            }
+
+            if (velocityMagnitude > _peakMagnitude)
+            {
+                _peakMagnitude = velocityMagnitude;
+            }
 
             if (PrimaryIsGripping) return;
 
             int medianIndex = Mathf.Clamp(_velocitySamples.Count / 2, 0, _velocitySamples.Count - 1);
-            _flickMagnitude = _velocitySamples[medianIndex];
+
+            // Blend between median velocity and peak velocity
+            _flickMagnitude = Mathf.Lerp(_velocitySamples[medianIndex], velocityMagnitude, 0.5f);
 
             // If detect flick
             _velocitySamples.Clear();
@@ -276,16 +287,20 @@ namespace prvncher.XR_Interaction.Grabbity
                 Vector3 verticalOffset = Vector3.Project(_headpose.position - CurrentGrabbable.transform.position, Vector3.up);
 
                 Vector3 toTarget = positionTarget - CurrentGrabbable.transform.position;
+                float toTargetMagnitude = toTarget.magnitude;
 
-                Vector3 targetVelocity = (toTarget  + verticalOffset * 1.5f).normalized * toTarget.magnitude * _flickMagnitude * 2f;
-                _selectedGrabbable.RigidBodyComponent.velocity = targetVelocity;
+                float verticalOffsetMagnitude = Mathf.Clamp(verticalOffset.magnitude, 0.5f, 3f);
+
+                Vector3 targetVelocity = (toTarget + Vector3.up * verticalOffsetMagnitude) * _flickMagnitude * 2f;
+                float targetMagnitude = targetVelocity.magnitude;
+
+                _selectedGrabbable.RigidBodyComponent.velocity = targetVelocity.normalized * Mathf.Clamp(targetMagnitude, 0.5f, Mathf.Max(toTargetMagnitude, 8f));
             }
-
-            Debug.Log($"{_selectedGrabbable} flick");
         }
 
         private void HomeToHand()
         {
+            if ((Time.time - _lastFlickTime) < 0.25f) return;
             if (_selectedGrabbable == null) return;
 
             Vector3 handPose = _rightHandIsPrimary ? _rightHand.position : _leftHand.position;
@@ -299,27 +314,19 @@ namespace prvncher.XR_Interaction.Grabbity
             }
 
             float toHandMagnitude = toHand.magnitude;
-            if (toHandMagnitude < 1)
+            Vector3 currentVelocity = _selectedGrabbable.RigidBodyComponent.velocity;
+            float currentVelocityMagnitude = currentVelocity.magnitude;
+
+            Vector3 newVelocityDirection = currentVelocity;
+            if (toHandMagnitude < 0.75f)
             {
-                Vector3 currentVelocity = _selectedGrabbable.RigidBodyComponent.velocity;
-                float currentVelocityMagnitude = currentVelocity.magnitude;
-
-                Vector3 newVelocityDirection = currentVelocity;
-
-                if (toHandMagnitude > 0.5f || (Time.time - _lastFlickTime) > 0.25f)
-                {
-                    newVelocityDirection = toHand;
-                }
-
-                if (currentVelocity.magnitude > 1)
-                {
-                    //currentVelocity /= 2;
-                    float dampenedVelocity = currentVelocityMagnitude * (float)Math.Pow(0.7f, Time.deltaTime);
-                    currentVelocity = currentVelocity.normalized * dampenedVelocity;
-                }
-
-                _selectedGrabbable.RigidBodyComponent.velocity = currentVelocity.magnitude * newVelocityDirection.normalized;
+                newVelocityDirection -=  (0.05f * Time.deltaTime * toHand);
             }
+
+            //currentVelocity /= 2;
+            float dampenedVelocity = currentVelocityMagnitude * (float)Math.Pow(0.05f, Time.deltaTime);
+            //currentVelocity = currentVelocity.normalized * dampenedVelocity;
+            _selectedGrabbable.RigidBodyComponent.velocity = dampenedVelocity * newVelocityDirection.normalized;
         }
 
         private void ResetSelection()
@@ -327,6 +334,7 @@ namespace prvncher.XR_Interaction.Grabbity
             _objectInFlight = false;
             CurrentGrabbable = null;
             _selectedGrabbable = null;
+            _peakMagnitude = 0f;
             _velocitySamples.Clear();
         }
     }
