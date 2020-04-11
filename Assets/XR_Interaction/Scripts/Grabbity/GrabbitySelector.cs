@@ -192,12 +192,16 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 if (!_objectInFlight)
                 {
-                    DetectFlick();
+                    ParabolaToHand();
+                    _objectInFlight = true;
+
+                    //DetectFlick();
                 }
 
                 if (_objectInFlight)
                 {
-                    HomeToHand();
+                    //HomeToHand();
+                    //ParabolaToHand();
                 }
             }
         }
@@ -324,6 +328,15 @@ namespace prvncher.XR_Interaction.Grabbity
             }
 
             _selectedGrabbable.RigidBodyComponent.velocity = newVelocityDirection;
+        }
+
+        void ParabolaToHand()
+        {
+            Vector3 handPose = _rightHandIsPrimary ? _rightHand.position : _leftHand.position;
+            Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
+            _selectedGrabbable.GetComponent<Projectile>().TargetObjectTF = handTransform;
+            _selectedGrabbable.GetComponent<Projectile>().Launch();
+
         }
 
         private void ResetSelection()
