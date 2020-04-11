@@ -693,6 +693,12 @@ MonoBehaviour:
   _headpose: {fileID: 7559847049997679121}
   _rightHand: {fileID: 7559847051477665366}
   _leftHand: {fileID: 7559847050563593493}
+  RightHandSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  LeftHandSelected:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &163834951
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace prvncher.XR_Interaction.Grabbity
 {
@@ -51,6 +52,11 @@ namespace prvncher.XR_Interaction.Grabbity
 
         [SerializeField]
         private Transform _leftHand = null;
+
+        [Header("Event Responses")]
+        public UnityEvent RightHandSelected = new UnityEvent();
+
+        public UnityEvent LeftHandSelected = new UnityEvent();
 
         private void OnDestroy()
         {
@@ -120,6 +126,14 @@ namespace prvncher.XR_Interaction.Grabbity
                 if (value != null)
                 {
                     _currentGrabbable.OnObjectFocused();
+                    if (_rightHandIsPrimary)
+                    {
+                        RightHandSelected.Invoke();
+                    }
+                    else
+                    {
+                        LeftHandSelected.Invoke();
+                    }
                 }
             }
         }
@@ -168,7 +182,7 @@ namespace prvncher.XR_Interaction.Grabbity
 
             GrabbityGrabbable newGrabbable = null;
 
-            float selectionThreshold = _currentGrabbable == null ? _deselectionTreshold : _initialSelectionAngleThreshold;
+            float selectionThreshold = _currentGrabbable == null ? _initialSelectionAngleThreshold : _selectionChangedAngleThreshold;
 
             // Iterate over visible grabbables
             foreach (var grabbable in _grabbables)

@@ -14,7 +14,10 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
     public class XRControllerInput : MonoBehaviour
     {
         private InputDevice _leftController;
+        public InputDevice LeftController => _leftController;
+
         private InputDevice _rightController;
+        public InputDevice RightController => _rightController;
 
         private bool _leftGripPressedState = false;
         public BoolUnityEvent _leftGripPressed = new BoolUnityEvent();
@@ -56,6 +59,32 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
                 {
                     _rightController = connectedDevice;
                 }
+            }
+        }
+
+        public void LeftHapticsResponse(float duration)
+        {
+            ApplyLeftHapticsResponse(duration: duration);
+        }
+
+        public void ApplyLeftHapticsResponse(uint channel = 0, float amplitude = 0.5f, float duration = 0.5f)
+        {
+            if (_leftController.isValid)
+            {
+                _leftController.SendHapticImpulse(channel, amplitude, duration);
+            }
+        }
+
+        public void RightHapticsResponse(float duration)
+        {
+            ApplyRightHapticsResponse(duration: duration);
+        }
+
+        public void ApplyRightHapticsResponse(uint channel = 0, float amplitude = 0.5f, float duration = 0.5f)
+        {
+            if (_rightController.isValid)
+            {
+                _rightController.SendHapticImpulse(channel, amplitude, duration);
             }
         }
 

@@ -121,6 +121,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &163834951 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 163834951, guid: b602c227d1c7e34478246975c1dfba49,
+    type: 3}
+  m_PrefabInstance: {fileID: 7559847050902601283}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 865d0ea00c641274a8697be94d14b021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &163834957 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49,
@@ -5058,6 +5070,62 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163834951}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163834951}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RightHapticsResponse
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LeftHapticsResponse
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: LeftHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 163834957, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
+      propertyPath: RightHandSelected.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_FloatArgument
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 7559847050476767816, guid: b602c227d1c7e34478246975c1dfba49,
         type: 3}
       propertyPath: m_LocalPosition.x
