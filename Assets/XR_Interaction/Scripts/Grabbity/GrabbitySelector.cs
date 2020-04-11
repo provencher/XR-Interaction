@@ -315,18 +315,15 @@ namespace prvncher.XR_Interaction.Grabbity
 
             float toHandMagnitude = toHand.magnitude;
             Vector3 currentVelocity = _selectedGrabbable.RigidBodyComponent.velocity;
-            float currentVelocityMagnitude = currentVelocity.magnitude;
 
             Vector3 newVelocityDirection = currentVelocity;
             if (toHandMagnitude < 0.75f)
             {
+                // Dampen velocity
                 newVelocityDirection -=  (0.05f * Time.deltaTime * toHand);
             }
 
-            //currentVelocity /= 2;
-            float dampenedVelocity = currentVelocityMagnitude * (float)Math.Pow(0.05f, Time.deltaTime);
-            //currentVelocity = currentVelocity.normalized * dampenedVelocity;
-            _selectedGrabbable.RigidBodyComponent.velocity = dampenedVelocity * newVelocityDirection.normalized;
+            _selectedGrabbable.RigidBodyComponent.velocity = newVelocityDirection;
         }
 
         private void ResetSelection()
