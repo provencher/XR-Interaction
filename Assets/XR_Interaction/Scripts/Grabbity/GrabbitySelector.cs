@@ -80,6 +80,8 @@ namespace prvncher.XR_Interaction.Grabbity
         public void LeftGripInputChanged(bool isPressed)
         {
             _leftGripPressed = isPressed;
+            //Debug.Log($"left gripping: {_leftGripPressed}");
+
             if (isPressed)
             {
                 _rightHandIsPrimary = false;
@@ -91,6 +93,8 @@ namespace prvncher.XR_Interaction.Grabbity
         public void RightGripInputChanged(bool isPressed)
         {
             _rightGripPressed = isPressed;
+            //Debug.Log($"right gripping: {_rightGripPressed}");
+
             if (isPressed)
             {
                 _rightHandIsPrimary = true;
@@ -158,27 +162,33 @@ namespace prvncher.XR_Interaction.Grabbity
             }
         }
 
+        private GrabbityGrabbable _selectedGrabbable = null;
+
         private float _lastFlickTime = 0f;
         private void Update()
         {
             // If we are not currently gripping, we allow the system to select a new target if the last flick was far enough in the past
-            if (_objectInFlight && (Time.time - _lastFlickTime) > _flickDelay)
-            {
-                _objectInFlight = false;
-            }
-
             bool blockSelection = _leftHandGrabbing || _rightHandGrabbing;
-            if (blockSelection)
+            if (blockSelection || (_objectInFlight && (Time.time - _lastFlickTime) > _flickDelay))
             {
-                CurrentGrabbable = null;
+                ResetSelection();
                 return;
             }
 
-            if (!PrimaryIsGripping && !_objectInFlight)
+            // Debug.Log($"gripping: {PrimaryIsGripping}");
+
+            if (PrimaryIsGripping && CurrentGrabbable != null)
+            {
+                _selectedGrabbable = CurrentGrabbable;
+                //Debug.Log($"{_selectedGrabbable} selected");
+            }
+
+            if (!PrimaryIsGripping && _selectedGrabbable == null && !_objectInFlight)
             {
                 Selection();
             }
-            else if (CurrentGrabbable != null)
+
+            if (_selectedGrabbable != null)
             {
                 if (!_objectInFlight)
                 {
@@ -240,34 +250,84 @@ namespace prvncher.XR_Interaction.Grabbity
         }
 
         private float _flickMagnitude = 0f;
+
+        private List<float> _velocitySamples = new List<float>();
+        
         private void DetectFlick()
         {
             Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
-
             float velocityMagnitude = handVelocity.magnitude;
-            if (velocityMagnitude > 3)
-            {
-                _flickMagnitude = velocityMagnitude;
-                _objectInFlight = true;
 
-                if (CurrentGrabbable != null)
-                {
-                    Vector3 positionTarget = _rightHandIsPrimary ? _rightHand.transform.position : _leftHand.transform.position;
-                    CurrentGrabbable.RigidBodyComponent.velocity =
-                        (positionTarget - CurrentGrabbable.transform.position).normalized * _flickMagnitude;
-                }
+            _velocitySamples.Add(velocityMagnitude);
+
+            if (PrimaryIsGripping) return;
+
+            int medianIndex = Mathf.Clamp(_velocitySamples.Count / 2, 0, _velocitySamples.Count - 1);
+            _flickMagnitude = _velocitySamples[medianIndex];
+
+            // If detect flick
+            _velocitySamples.Clear();
+            _objectInFlight = true;
+            _lastFlickTime = Time.time;
+
+            if (_selectedGrabbable != null)
+            {
+                Vector3 positionTarget = _rightHandIsPrimary ? _rightHand.transform.position : _leftHand.transform.position;
+                Vector3 verticalOffset = Vector3.Project(_headpose.position - CurrentGrabbable.transform.position, Vector3.up);
+
+                Vector3 toTarget = positionTarget - CurrentGrabbable.transform.position;
+
+                Vector3 targetVelocity = (toTarget  + verticalOffset * 1.5f).normalized * toTarget.magnitude * _flickMagnitude * 2f;
+                _selectedGrabbable.RigidBodyComponent.velocity = targetVelocity;
             }
 
-            if (_objectInFlight)
-            {
-                // If detect flick
-                _lastFlickTime = Time.time;
-            }
+            Debug.Log($"{_selectedGrabbable} flick");
         }
 
         private void HomeToHand()
         {
-            
+            if (_selectedGrabbable == null) return;
+
+            Vector3 handPose = _rightHandIsPrimary ? _rightHand.position : _leftHand.position;
+            Vector3 toHand = handPose - _selectedGrabbable.transform.position;
+
+            // Ensure the object is front of the user - if not we stop what we're doing
+            if (Vector3.Dot(toHand, _headpose.forward) < 0)
+            {
+                ResetSelection();
+                return;
+            }
+
+            float toHandMagnitude = toHand.magnitude;
+            if (toHandMagnitude < 1)
+            {
+                Vector3 currentVelocity = _selectedGrabbable.RigidBodyComponent.velocity;
+                float currentVelocityMagnitude = currentVelocity.magnitude;
+
+                Vector3 newVelocityDirection = currentVelocity;
+
+                if (toHandMagnitude > 0.5f || (Time.time - _lastFlickTime) > 0.25f)
+                {
+                    newVelocityDirection = toHand;
+                }
+
+                if (currentVelocity.magnitude > 1)
+                {
+                    //currentVelocity /= 2;
+                    float dampenedVelocity = currentVelocityMagnitude * (float)Math.Pow(0.7f, Time.deltaTime);
+                    currentVelocity = currentVelocity.normalized * dampenedVelocity;
+                }
+
+                _selectedGrabbable.RigidBodyComponent.velocity = currentVelocity.magnitude * newVelocityDirection.normalized;
+            }
+        }
+
+        private void ResetSelection()
+        {
+            _objectInFlight = false;
+            CurrentGrabbable = null;
+            _selectedGrabbable = null;
+            _velocitySamples.Clear();
         }
     }
 }
