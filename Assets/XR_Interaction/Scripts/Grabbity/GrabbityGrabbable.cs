@@ -49,7 +49,7 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 _highlightComponent.ApplyHighlight();
             }
-            Debug.Log($"{gameObject} selected");
+            //Debug.Log($"{gameObject} selected");
         }
 
         public void OnObjectUnFocused()
@@ -58,7 +58,7 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 _highlightComponent.RemoveHighlight();
             }
-            Debug.Log($"{gameObject} unselected");
+            //Debug.Log($"{gameObject} unselected");
         }
 
         private void Update()

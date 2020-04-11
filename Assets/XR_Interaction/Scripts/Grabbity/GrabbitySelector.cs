@@ -29,12 +29,15 @@ namespace prvncher.XR_Interaction.Grabbity
 
         private GrabbityGrabbable _currentGrabbable = null;
 
-        private Camera _mainCamera = null;
 
-        private void Awake()
-        {
-            _mainCamera = Camera.main;
-        }
+        [SerializeField]
+        private Transform _headpose = null;
+
+        [SerializeField]
+        private Transform _rightHand = null;
+
+        [SerializeField]
+        private Transform _leftHand = null;
 
         private void OnDestroy()
         {
@@ -42,13 +45,28 @@ namespace prvncher.XR_Interaction.Grabbity
             _grabbables.Clear();
         }
 
+        private bool _leftGripPressed = false;
+        public void LeftGripInputChanged(bool isPressed)
+        {
+            _leftGripPressed = isPressed;
+            Debug.Log($"Left Grip {isPressed}");
+        }
+
+        private bool _rightGripPressed = false;
+        public void RightGripInputChanged(bool isPressed)
+        {
+            _rightGripPressed = isPressed;
+            Debug.Log($"Right Grip {isPressed}");
+        }
+
         private void Update()
         {
             Transform grabbingHand = null;
 
             float angleFromCamera = 360;
-            Vector3 cameraForward = _mainCamera.transform.forward;
-            Vector3 cameraPosition = _mainCamera.transform.position;
+
+            Vector3 cameraForward = _headpose.transform.forward;
+            Vector3 cameraPosition = _headpose.transform.position;
 
             GrabbityGrabbable newGrabbable = null;
 
