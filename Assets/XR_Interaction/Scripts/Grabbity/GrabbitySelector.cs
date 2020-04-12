@@ -87,6 +87,10 @@ namespace prvncher.XR_Interaction.Grabbity
                 _rightHandIsPrimary = false;
                 _leftHandPoseAtGrip = _leftHand.transform.position;
             }
+            else if (!_rightHandIsPrimary)
+            {
+                OnPrimaryGripReleased();
+            }
         }
 
         private bool _rightGripPressed = false;
@@ -99,6 +103,10 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 _rightHandIsPrimary = true;
                 _rightHandPoseAtGrip = _rightHand.transform.position;
+            }
+            else if (_rightHandIsPrimary)
+            {
+                OnPrimaryGripReleased();
             }
         }
 
@@ -187,23 +195,6 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 Selection();
             }
-
-            if (_selectedGrabbable != null)
-            {
-                if (!_objectInFlight)
-                {
-                    ParabolaToHand();
-                    _objectInFlight = true;
-
-                    //DetectFlick();
-                }
-
-                if (_objectInFlight)
-                {
-                    //HomeToHand();
-                    //ParabolaToHand();
-                }
-            }
         }
 
         private void Selection()
@@ -253,55 +244,6 @@ namespace prvncher.XR_Interaction.Grabbity
             }
         }
 
-        private float _flickMagnitude = 0f;
-        private float _peakMagnitude = 0f;
-        private List<float> _velocitySamples = new List<float>();
-
-        private void DetectFlick()
-        {
-            Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
-            float velocityMagnitude = handVelocity.magnitude;
-
-            _velocitySamples.Add(velocityMagnitude);
-            if (_velocitySamples.Count > 10)
-            {
-                _velocitySamples.RemoveAt(0);
-            }
-
-            if (velocityMagnitude > _peakMagnitude)
-            {
-                _peakMagnitude = velocityMagnitude;
-            }
-
-            if (PrimaryIsGripping) return;
-
-            int medianIndex = Mathf.Clamp(_velocitySamples.Count / 2, 0, _velocitySamples.Count - 1);
-
-            // Blend between median velocity and peak velocity
-            _flickMagnitude = Mathf.Lerp(_velocitySamples[medianIndex], velocityMagnitude, 0.5f);
-
-            // If detect flick
-            _velocitySamples.Clear();
-            _objectInFlight = true;
-            _lastFlickTime = Time.time;
-
-            if (_selectedGrabbable != null)
-            {
-                Vector3 positionTarget = _rightHandIsPrimary ? _rightHand.transform.position : _leftHand.transform.position;
-                Vector3 verticalOffset = Vector3.Project(_headpose.position - CurrentGrabbable.transform.position, Vector3.up);
-
-                Vector3 toTarget = positionTarget - CurrentGrabbable.transform.position;
-                float toTargetMagnitude = toTarget.magnitude;
-
-                float verticalOffsetMagnitude = Mathf.Clamp(verticalOffset.magnitude, 0.5f, 3f);
-
-                Vector3 targetVelocity = (toTarget + Vector3.up * verticalOffsetMagnitude) * _flickMagnitude * 2f;
-                float targetMagnitude = targetVelocity.magnitude;
-
-                _selectedGrabbable.RigidBodyComponent.velocity = targetVelocity.normalized * Mathf.Clamp(targetMagnitude, 0.5f, Mathf.Max(toTargetMagnitude, 6f));
-            }
-        }
-
         private void HomeToHand()
         {
             if ((Time.time - _lastFlickTime) < 0.25f) return;
@@ -324,7 +266,7 @@ namespace prvncher.XR_Interaction.Grabbity
             if (toHandMagnitude < 0.75f)
             {
                 // Dampen velocity
-                newVelocityDirection -=  (0.05f * Time.deltaTime * toHand);
+                newVelocityDirection -= (0.05f * Time.deltaTime * toHand);
             }
 
             _selectedGrabbable.RigidBodyComponent.velocity = newVelocityDirection;
@@ -334,9 +276,8 @@ namespace prvncher.XR_Interaction.Grabbity
         {
             Vector3 handPose = _rightHandIsPrimary ? _rightHand.position : _leftHand.position;
             Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
-            _selectedGrabbable.GetComponent<Projectile>().TargetObjectTF = handTransform;
-            _selectedGrabbable.GetComponent<Projectile>().Launch();
 
+            Launch(handTransform);
         }
 
         private void ResetSelection()
@@ -344,8 +285,67 @@ namespace prvncher.XR_Interaction.Grabbity
             _objectInFlight = false;
             CurrentGrabbable = null;
             _selectedGrabbable = null;
-            _peakMagnitude = 0f;
-            _velocitySamples.Clear();
+        }
+
+        private void OnPrimaryGripReleased()
+        {
+            if (_selectedGrabbable != null && !_objectInFlight)
+            {
+                Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
+                Vector3 toHand = handTransform.position - _selectedGrabbable.transform.position;
+
+                Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
+                //if (Vector3.Dot(handVelocity.normalized, toHand.normalized) < 0) return;
+
+                float velocityMagnitude = handVelocity.magnitude;
+                if (velocityMagnitude < 0.5f)
+                {
+                    _selectedGrabbable.RigidBodyComponent.velocity = handVelocity;
+                }
+                else
+                {
+                    Launch(handTransform);
+                }
+
+                _objectInFlight = true;
+                _lastFlickTime = Time.time;
+            }
+        }
+
+        private void Launch(Transform target, float launchAngle = 45f)
+        {
+            Transform grabbableTransform = _selectedGrabbable.transform;
+
+            // think of it as top-down view of vectors: 
+            //   we don't care about the y-component(height) of the initial and target position.
+            Vector3 projectileXZPos = new Vector3(grabbableTransform.position.x, 0.0f, grabbableTransform.position.z);
+            Vector3 targetXZPos = new Vector3(target.position.x, 0.0f, target.position.z);
+
+            // rotate the object to face the target
+            //transform.LookAt(targetXZPos);
+
+            // rotate the object to face the target
+            grabbableTransform.LookAt(targetXZPos);
+
+            // shorthands for the formula
+            float R = Vector3.Distance(projectileXZPos, targetXZPos);
+            float G = Physics.gravity.y;
+            float tanAlpha = Mathf.Tan(launchAngle * Mathf.Deg2Rad);
+            float H = Mathf.Abs(target.position.y - grabbableTransform.position.y);
+
+            // calculate the local space components of the velocity 
+            // required to land the projectile on the target object 
+            float divisor = (2.0f * (H - R * tanAlpha));
+
+            float Vz = Mathf.Sqrt(Mathf.Abs(G * R * R / divisor));
+            float Vy = tanAlpha * Vz;
+
+            // create the velocity vector in local space and get it in global space
+            Vector3 localVelocity = new Vector3(0f, Vy, Vz);
+            Vector3 globalVelocity = grabbableTransform.TransformDirection(localVelocity);
+
+            // launch the object by setting its initial velocity and flipping its state
+            _selectedGrabbable.RigidBodyComponent.velocity = globalVelocity;
         }
     }
 }
