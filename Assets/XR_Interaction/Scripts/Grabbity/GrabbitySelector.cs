@@ -25,10 +25,14 @@ namespace prvncher.XR_Interaction.Grabbity
         public static void DeRegisterGrabbable(GrabbityGrabbable grabbable)
         {
             _grabbables.Add(grabbable);
+            if (grabbable == CurrentGrabbable)
+            {
+                CurrentGrabbable = null;
+            }
         }
         #endregion
 
-        private GrabbityGrabbable _currentGrabbable = null;
+        private static GrabbityGrabbable _currentGrabbable = null;
 
         [Header("Thresholds")]
         [SerializeField]
@@ -70,7 +74,7 @@ namespace prvncher.XR_Interaction.Grabbity
         private bool _objectInFlight = false;
 
         // Primary hand input is determined by last pressed grip key
-        private bool _rightHandIsPrimary = true;
+        private static bool _rightHandIsPrimary = true;
 
         private bool PrimaryIsGripping => _rightHandIsPrimary ? _rightGripPressed : _leftGripPressed;
 
@@ -143,7 +147,7 @@ namespace prvncher.XR_Interaction.Grabbity
 
         #endregion
 
-        public GrabbityGrabbable CurrentGrabbable
+        public static GrabbityGrabbable CurrentGrabbable
         {
             get => _currentGrabbable;
             private set
@@ -158,40 +162,22 @@ namespace prvncher.XR_Interaction.Grabbity
                 if (value != null)
                 {
                     _currentGrabbable.OnObjectFocused();
-                    if (_rightHandIsPrimary)
-                    {
-                        RightHandSelected.Invoke();
-                    }
-                    else
-                    {
-                        LeftHandSelected.Invoke();
-                    }
                 }
             }
         }
-
-        private GrabbityGrabbable _selectedGrabbable = null;
 
         private float _lastFlickTime = 0f;
         private void Update()
         {
             // If we are not currently gripping, we allow the system to select a new target if the last flick was far enough in the past
             bool blockSelection = _leftHandGrabbing || _rightHandGrabbing;
-            if (blockSelection || (_objectInFlight && (Time.time - _lastFlickTime) > _flickDelay))
+            if (blockSelection || _objectInFlight /*&& (Time.time - _lastFlickTime) > _flickDelay)*/)
             {
                 ResetSelection();
                 return;
             }
 
-            // Debug.Log($"gripping: {PrimaryIsGripping}");
-
-            if (PrimaryIsGripping && CurrentGrabbable != null)
-            {
-                _selectedGrabbable = CurrentGrabbable;
-                //Debug.Log($"{_selectedGrabbable} selected");
-            }
-
-            if (!PrimaryIsGripping && _selectedGrabbable == null && !_objectInFlight)
+            if (!PrimaryIsGripping && !_objectInFlight)
             {
                 Selection();
             }
@@ -231,6 +217,15 @@ namespace prvncher.XR_Interaction.Grabbity
             if (newGrabbable != null && newGrabbable != _currentGrabbable)
             {
                 CurrentGrabbable = newGrabbable;
+
+                if (_rightHandIsPrimary)
+                {
+                    RightHandSelected.Invoke();
+                }
+                else
+                {
+                    LeftHandSelected.Invoke();
+                }
             }
             // If we have no grabbable, we assess if we should terminate all selection
             else if (newGrabbable == null && _currentGrabbable != null)
@@ -243,7 +238,7 @@ namespace prvncher.XR_Interaction.Grabbity
                 }
             }
         }
-
+        /*
         private void HomeToHand()
         {
             if ((Time.time - _lastFlickTime) < 0.25f) return;
@@ -271,50 +266,38 @@ namespace prvncher.XR_Interaction.Grabbity
 
             _selectedGrabbable.RigidBodyComponent.velocity = newVelocityDirection;
         }
-
-        void ParabolaToHand()
-        {
-            Vector3 handPose = _rightHandIsPrimary ? _rightHand.position : _leftHand.position;
-            Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
-
-            Launch(handTransform);
-        }
+        */
 
         private void ResetSelection()
         {
             _objectInFlight = false;
             CurrentGrabbable = null;
-            _selectedGrabbable = null;
         }
 
         private void OnPrimaryGripReleased()
         {
-            if (_selectedGrabbable != null && !_objectInFlight)
+            if (CurrentGrabbable == null || _objectInFlight) return;
+
+            Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
+            Vector3 toHand = handTransform.position - CurrentGrabbable.transform.position;
+
+            Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
+            //if (Vector3.Dot(handVelocity.normalized, toHand.normalized) < 0) return;
+
+            if (handVelocity.magnitude < 0.5f)
             {
-                Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
-                Vector3 toHand = handTransform.position - _selectedGrabbable.transform.position;
-
-                Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
-                //if (Vector3.Dot(handVelocity.normalized, toHand.normalized) < 0) return;
-
-                float velocityMagnitude = handVelocity.magnitude;
-                if (velocityMagnitude < 0.5f)
-                {
-                    _selectedGrabbable.RigidBodyComponent.velocity = handVelocity;
-                }
-                else
-                {
-                    Launch(handTransform);
-                }
-
-                _objectInFlight = true;
-                _lastFlickTime = Time.time;
+                return;
             }
+
+            Launch(CurrentGrabbable, handTransform);
+
+            _objectInFlight = true;
+            _lastFlickTime = Time.time;
         }
 
-        private void Launch(Transform target, float launchAngle = 45f)
+        private void Launch(GrabbityGrabbable grabbable, Transform target)
         {
-            Transform grabbableTransform = _selectedGrabbable.transform;
+            Transform grabbableTransform = grabbable.transform;
 
             // think of it as top-down view of vectors: 
             //   we don't care about the y-component(height) of the initial and target position.
@@ -322,30 +305,51 @@ namespace prvncher.XR_Interaction.Grabbity
             Vector3 targetXZPos = new Vector3(target.position.x, 0.0f, target.position.z);
 
             // rotate the object to face the target
-            //transform.LookAt(targetXZPos);
 
-            // rotate the object to face the target
-            grabbableTransform.LookAt(targetXZPos);
+            Quaternion lookRotation = Quaternion.LookRotation(targetXZPos - grabbableTransform.position);
+
+            //grabbableTransform.LookAt(targetXZPos);
 
             // shorthands for the formula
             float R = Vector3.Distance(projectileXZPos, targetXZPos);
+
+            float launchAngle = Mathf.Lerp(45f, 75f, 1f - Mathf.Clamp01(R * 2f));
+
             float G = Physics.gravity.y;
             float tanAlpha = Mathf.Tan(launchAngle * Mathf.Deg2Rad);
-            float H = Mathf.Abs(target.position.y - grabbableTransform.position.y);
+            float H = target.position.y + 0.25f - grabbableTransform.position.y;
 
             // calculate the local space components of the velocity 
             // required to land the projectile on the target object 
-            float divisor = (2.0f * (H - R * tanAlpha));
 
-            float Vz = Mathf.Sqrt(Mathf.Abs(G * R * R / divisor));
-            float Vy = tanAlpha * Vz;
+            float grr = G * R * R;
+            float hrTan = (H - R * tanAlpha);
+            //Debug.Log($"{VzSquarred} {G * R * R} {H - R * tanAlpha}");
 
-            // create the velocity vector in local space and get it in global space
-            Vector3 localVelocity = new Vector3(0f, Vy, Vz);
-            Vector3 globalVelocity = grabbableTransform.TransformDirection(localVelocity);
+
+            Vector3 globalVelocity;
+
+            // if hrTan is > 0f, it means that the target is almost straight above the projectile.
+            // If that happens, we simply shoot the object up
+            if (hrTan > 0f)
+            {
+                globalVelocity = (target.position + Vector3.up * 0.25f - grabbable.transform.position).normalized * 4f;
+            }
+            else
+            {
+                float VzSquarred = grr / (2.0f * hrTan);
+                float Vz = Mathf.Sqrt(VzSquarred);
+                float Vy = tanAlpha * Vz;
+
+                // create the velocity vector in local space and get it in global space
+                Vector3 localVelocity = new Vector3(0f, Vy, Vz);
+                globalVelocity = lookRotation * localVelocity;
+            }
 
             // launch the object by setting its initial velocity and flipping its state
-            _selectedGrabbable.RigidBodyComponent.velocity = globalVelocity;
+            grabbable.RigidBodyComponent.velocity = globalVelocity;
+
+            //Debug.Log($"Launched {grabbable.gameObject} with velocity {globalVelocity} and launch angle {launchAngle}");
         }
     }
 }
