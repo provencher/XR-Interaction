@@ -29,6 +29,11 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 CurrentGrabbable = null;
             }
+
+            if (_launchedRigidbody == grabbable.RigidBodyComponent)
+            {
+                _launchedRigidbody = null;
+            }
         }
         #endregion
 
@@ -171,17 +176,23 @@ namespace prvncher.XR_Interaction.Grabbity
         {
             // If we are not currently gripping, we allow the system to select a new target if the last flick was far enough in the past
             bool blockSelection = _leftHandGrabbing || _rightHandGrabbing;
-            if (blockSelection || _objectInFlight /*&& (Time.time - _lastFlickTime) > _flickDelay)*/)
+            if (blockSelection || _objectInFlight)
             {
                 ResetSelection();
                 return;
             }
 
-            if (!PrimaryIsGripping && !_objectInFlight)
+            if (!PrimaryIsGripping)
             {
                 Selection();
             }
+            else
+            {
+                HomeToHand();
+            }
         }
+
+        private static Rigidbody _launchedRigidbody = null;
 
         private void Selection()
         {
@@ -268,10 +279,35 @@ namespace prvncher.XR_Interaction.Grabbity
         }
         */
 
+        private void HomeToHand()
+        {
+            // Wait a few frames after launch to do anything
+            if (Time.time - _lastFlickTime < 0.25f) return;
+            if (_launchedRigidbody != null)
+            {
+                Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
+                Vector3 toHand = handTransform.position - _launchedRigidbody.transform.position;
+                float toHandMagnitude = toHand.magnitude;
+                // if object is inert or out of bounds, we clear it out
+                if (toHandMagnitude > 50f || _launchedRigidbody.velocity.magnitude < 0.2f)
+                {
+                    _launchedRigidbody = null;
+                    return;
+                }
+
+                if (toHandMagnitude > 2f || toHandMagnitude < 0.25f) return;
+
+                Vector3 currentVelocity = _launchedRigidbody.velocity;
+                Vector3 adjustedVelocity = currentVelocity + ((toHand.normalized * currentVelocity.magnitude - currentVelocity) * (0.1f * Time.deltaTime));
+                _launchedRigidbody.velocity = adjustedVelocity;
+            }
+        }
+
         private void ResetSelection()
         {
             _objectInFlight = false;
             CurrentGrabbable = null;
+            //_launchedRigidbody = null;
         }
 
         private void OnPrimaryGripReleased()
@@ -313,6 +349,7 @@ namespace prvncher.XR_Interaction.Grabbity
             // shorthands for the formula
             float R = Vector3.Distance(projectileXZPos, targetXZPos);
 
+            // If the object is very close by, we make the launch angle more aggressive
             float launchAngle = Mathf.Lerp(45f, 75f, 1f - Mathf.Clamp01(R * 2f));
 
             float G = Physics.gravity.y;
@@ -348,6 +385,7 @@ namespace prvncher.XR_Interaction.Grabbity
 
             // launch the object by setting its initial velocity and flipping its state
             grabbable.RigidBodyComponent.velocity = globalVelocity;
+            _launchedRigidbody = grabbable.RigidBodyComponent;
 
             //Debug.Log($"Launched {grabbable.gameObject} with velocity {globalVelocity} and launch angle {launchAngle}");
         }
