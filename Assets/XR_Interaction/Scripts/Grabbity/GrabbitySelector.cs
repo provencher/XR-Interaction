@@ -454,7 +454,7 @@ namespace prvncher.XR_Interaction.Grabbity
             // If that happens, we simply shoot the object up
             if (hrTan > 0f)
             {
-                globalVelocity = (target.position + Vector3.up * 0.05f - grabbable.transform.position).normalized * 4f;
+                globalVelocity = (target.position + Vector3.up * 0.05f - grabbable.transform.position).normalized * (0.5f + 3f * Mathf.Clamp(R / 2f, 0f, 1f));
             }
             else
             {
@@ -487,17 +487,15 @@ namespace prvncher.XR_Interaction.Grabbity
 
             float startTime = Time.time;
 
-            float startVerticalOffset = target.transform.position.y - grabbable.transform.position.y;
+            Vector3 projectileXZPos = new Vector3(grabbable.transform.position.x, 0.0f, grabbable.transform.position.z);
+            Vector3 targetXZPos = new Vector3(target.position.x, 0.0f, target.position.z);
+            float R = Vector3.Distance(projectileXZPos, targetXZPos);
 
-            float upwardAccelScalar = 1f;
-            if (startVerticalOffset < 0)
-            {
-                upwardAccelScalar = 1 + Mathf.Clamp01(-upwardAccelScalar);
-            }
-            grabbable.RigidBodyComponent.velocity = Vector3.up * 6f * upwardAccelScalar;
+            grabbable.RigidBodyComponent.velocity = Vector3.up * (3f + 3f * Mathf.Clamp01(R));
 
             while (grabbable.transform.position.y < target.transform.position.y + 0.5f && (Time.time - startTime) < 0.5f)
             {
+                grabbable.RigidBodyComponent.velocity += Mathf.Abs(Physics.gravity.y * Time.deltaTime) * Vector3.up;
                 yield return null;
             }
 
