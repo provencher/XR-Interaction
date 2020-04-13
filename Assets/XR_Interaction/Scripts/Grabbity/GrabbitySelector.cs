@@ -398,9 +398,13 @@ namespace prvncher.XR_Interaction.Grabbity
             // offset calculations
             float distance = Vector3.Distance(grabbable.transform.position, target.transform.position);
 
-            if (distance < 3.0f)
+            if (distance < 4.0f)
             {
                 _launchOffsetY = 0.75f;
+            }
+            else
+            {
+                _launchOffsetY = 0.5f;
             }
             
             _launchOffset = new Vector3(0, _launchOffsetY, 0);
