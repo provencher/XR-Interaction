@@ -393,6 +393,7 @@ namespace prvncher.XR_Interaction.Grabbity
 
         private void Launch(GrabbityGrabbable grabbable, Transform target)
         {
+            target.transform.position += Vector3.up;
             Transform grabbableTransform = grabbable.transform;
 
             // think of it as top-down view of vectors: 

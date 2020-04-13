@@ -9,6 +9,9 @@ namespace prvncher.XR_Interaction.FX
 
         private Material _materialInstance = null;
 
+        static string _albedoColor = "AlbedoTintColor";
+        static string _highEnabled = "BOOLEAN_C8256B8_ON";
+
         [SerializeField]
         [Tooltip("Color applied as highlight color leveraging the emission color property")]
         private Color _highlightColor = Color.cyan;
@@ -43,12 +46,14 @@ namespace prvncher.XR_Interaction.FX
 
         public void ApplyHighlight()
         {
-            MaterialInstance.color = _highlightColor;
+            MaterialInstance.SetColor(_albedoColor, _highlightColor);
+            MaterialInstance.EnableKeyword(_highEnabled);
         }
 
         public void RemoveHighlight()
         {
-            MaterialInstance.color = Color.white;
+            MaterialInstance.SetColor(_albedoColor, Color.white);
+            MaterialInstance.DisableKeyword(_highEnabled);
         }
     }
 }

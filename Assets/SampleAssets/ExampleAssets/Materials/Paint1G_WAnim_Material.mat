@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Paint1G_WAnim_Material
   m_Shader: {fileID: 4800000, guid: 5e5eca56e1993e741b41ac9c687d01a5, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: BOOLEAN_C8256B8
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
