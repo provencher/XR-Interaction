@@ -30,6 +30,12 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
         private bool _lastRightGripIsPressed = false;
         public BoolUnityEvent _rightGripPressed = new BoolUnityEvent();
 
+        bool _lastRightTriggerIsPressed = false;
+        public BoolUnityEvent _rightTriggerPressed = new BoolUnityEvent();
+
+        bool _lastLeftTriggerIsPressed = false;
+        public BoolUnityEvent _leftTriggerPressed = new BoolUnityEvent();
+
 
         private Vector3 _leftVelocity = Vector3.zero;
         public Vector3UnityEvent LeftVelocityUpdate = new Vector3UnityEvent();
@@ -145,6 +151,30 @@ namespace prvncher.XR_Interaction.XRToolkitExtensions
 
             LeftVelocityUpdate.Invoke(_leftVelocity);
             RightVelocityUpdate.Invoke(_rightVelocity);
+            
+            // pool input trigger
+            bool leftTriggerIsPressed = false;
+            if (_leftController.isValid)
+            {
+                _leftController.IsPressed(InputHelpers.Button.Trigger, out leftTriggerIsPressed);
+            }
+
+            if (leftTriggerIsPressed != _lastLeftTriggerIsPressed)
+            {
+                _leftTriggerPressed.Invoke(leftTriggerIsPressed);
+                _lastLeftTriggerIsPressed = leftTriggerIsPressed;
+            }
+            
+            bool rightTriggerIsPressed = false;
+            if (_rightController.isValid)
+            {
+                _rightController.IsPressed(InputHelpers.Button.Trigger, out rightTriggerIsPressed);
+            }
+            if (rightTriggerIsPressed != _lastRightTriggerIsPressed)
+            {
+                _rightTriggerPressed.Invoke(rightTriggerIsPressed);
+                _lastRightTriggerIsPressed = rightTriggerIsPressed;
+            }
         }
     }
 }

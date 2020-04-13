@@ -70,6 +70,11 @@ namespace prvncher.XR_Interaction.Grabbity
         private Vector3 _leftHandPoseAtGrip = Vector3.zero;
         private Vector3 _rightHandPoseAtGrip = Vector3.zero;
 
+        bool _rightTriggerPressed;
+        bool _leftTriggerPressed;
+
+        public bool GripBased = true;
+
         private void OnDestroy()
         {
             // Clear out static data on destroy
@@ -82,6 +87,7 @@ namespace prvncher.XR_Interaction.Grabbity
         private static bool _rightHandIsPrimary = true;
 
         private bool PrimaryIsGripping => _rightHandIsPrimary ? _rightGripPressed : _leftGripPressed;
+        bool PrimaryIsLockedOn => _rightHandIsPrimary ? _rightTriggerPressed : _leftTriggerPressed;
 
         #region Input management
 
@@ -98,7 +104,10 @@ namespace prvncher.XR_Interaction.Grabbity
             }
             else if (!_rightHandIsPrimary)
             {
-                OnPrimaryGripReleased();
+                if (GripBased)
+                {
+                    OnPrimaryGripReleased();
+                }
             }
         }
 
@@ -106,7 +115,7 @@ namespace prvncher.XR_Interaction.Grabbity
         public void RightGripInputChanged(bool isPressed)
         {
             _rightGripPressed = isPressed;
-            //Debug.Log($"right gripping: {_rightGripPressed}");
+            Debug.Log($"right gripping: {_rightGripPressed}");
 
             if (isPressed)
             {
@@ -115,7 +124,10 @@ namespace prvncher.XR_Interaction.Grabbity
             }
             else if (_rightHandIsPrimary)
             {
-                OnPrimaryGripReleased();
+                if (GripBased)
+                {
+                    OnPrimaryGripReleased();
+                }
             }
         }
 
@@ -129,6 +141,28 @@ namespace prvncher.XR_Interaction.Grabbity
         public void RightHandVelocityChanged(Vector3 newVelocity)
         {
             _rightHandVelocity = newVelocity;
+        }
+
+        public void RightTriggerInputChanged(bool isPressed)
+        {
+            _rightTriggerPressed = isPressed;
+
+            if (isPressed)
+            {
+                _rightHandIsPrimary = true;
+                _rightHandPoseAtGrip = _rightHand.transform.position;
+            }
+        }
+
+        public void LeftTriggerInputChanged(bool isPressed)
+        {
+            _leftTriggerPressed = isPressed;
+
+            if (isPressed)
+            {
+                _rightHandIsPrimary = false;
+                _leftHandPoseAtGrip = _leftHand.transform.position;
+            }
         }
 
         #endregion
@@ -174,21 +208,47 @@ namespace prvncher.XR_Interaction.Grabbity
         private float _lastFlickTime = 0f;
         private void Update()
         {
-            // If we are not currently gripping, we allow the system to select a new target if the last flick was far enough in the past
-            bool blockSelection = _leftHandGrabbing || _rightHandGrabbing;
-            if (blockSelection || _objectInFlight)
+            if (GripBased)
             {
-                ResetSelection();
-                return;
-            }
-
-            if (!PrimaryIsGripping)
-            {
-                Selection();
+                // If we are not currently gripping, we allow the system to select a new target if the last flick was far enough in the past
+                bool blockSelection = _leftHandGrabbing || _rightHandGrabbing;
+                if (blockSelection || _objectInFlight)
+                {
+                    ResetSelection();
+                    return;
+                }
+                
+                if (!PrimaryIsGripping)
+                {
+                    Selection();
+                }
+                else
+                {
+                    HomeToHand();
+                }
             }
             else
             {
-                HomeToHand();
+                bool LockedOn = _rightHandIsPrimary ? _rightTriggerPressed : _leftTriggerPressed;
+                if (!LockedOn)
+                {
+                    Selection();
+                }
+                else
+                {
+                    Vector3 primaryHandVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
+                    if (primaryHandVelocity.magnitude > 2f)
+                    {
+                        //HomeToHand();
+                        Transform _primaryHand = _rightHandIsPrimary ? _rightHand : _leftHand;
+                        if (_currentGrabbable != null)
+                        {
+                            Launch(_currentGrabbable, _primaryHand);
+                        }
+
+                        ResetSelection();
+                    }
+                }
             }
         }
 

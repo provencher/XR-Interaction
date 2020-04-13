@@ -721,6 +721,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  GripBased: 1
 --- !u!114 &163834951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -761,6 +762,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _rightTriggerPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  _leftTriggerPressed:
+    m_PersistentCalls:
+      m_Calls: []
   LeftVelocityUpdate:
     m_PersistentCalls:
       m_Calls:
