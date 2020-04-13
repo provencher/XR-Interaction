@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -218,7 +219,7 @@ namespace prvncher.XR_Interaction.Grabbity
                     ResetSelection();
                     return;
                 }
-                
+
                 if (!PrimaryIsGripping)
                 {
                     Selection();
@@ -359,7 +360,7 @@ namespace prvncher.XR_Interaction.Grabbity
                 if (toHandMagnitude > 2f || toHandMagnitude < 0.25f) return;
 
                 Vector3 currentVelocity = _launchedRigidbody.velocity;
-                Vector3 adjustedVelocity = currentVelocity + ((toHand.normalized * currentVelocity.magnitude - currentVelocity) * (0.1f * Time.deltaTime));
+                Vector3 adjustedVelocity = currentVelocity + ((toHand.normalized * currentVelocity.magnitude - currentVelocity * 2) * (0.1f * Time.deltaTime));
                 _launchedRigidbody.velocity = adjustedVelocity;
             }
         }
@@ -392,7 +393,7 @@ namespace prvncher.XR_Interaction.Grabbity
             _lastFlickTime = Time.time;
         }
 
-        private void Launch(GrabbityGrabbable grabbable, Transform target)
+        private void DoLaunch(GrabbityGrabbable grabbable, Transform target)
         {
             target.transform.position += _launchOffset;
             Transform grabbableTransform = grabbable.transform;
@@ -411,12 +412,23 @@ namespace prvncher.XR_Interaction.Grabbity
             // shorthands for the formula
             float R = Vector3.Distance(projectileXZPos, targetXZPos);
 
-            // If the object is very close by, we make the launch angle more aggressive
-            float launchAngle = Mathf.Lerp(45f, 75f, 1f - Mathf.Clamp01(R * 2f));
-
             float G = Physics.gravity.y;
+            float H = target.position.y - grabbableTransform.position.y;
+
+
+            // If the object is very close by, we make the launch angle more aggressive
+            float launchAngle;
+            if (H < 0)
+            {
+                launchAngle = 55f;
+            }
+            else
+            {
+                launchAngle = 30f + 10f * Mathf.Clamp(H * 5f, 0f, 2f);
+            }
+
             float tanAlpha = Mathf.Tan(launchAngle * Mathf.Deg2Rad);
-            float H = target.position.y + 0.25f - grabbableTransform.position.y;
+            Debug.Log(launchAngle);
 
             // calculate the local space components of the velocity 
             // required to land the projectile on the target object 
@@ -425,14 +437,13 @@ namespace prvncher.XR_Interaction.Grabbity
             float hrTan = (H - R * tanAlpha);
             //Debug.Log($"{VzSquarred} {G * R * R} {H - R * tanAlpha}");
 
-
             Vector3 globalVelocity;
 
             // if hrTan is > 0f, it means that the target is almost straight above the projectile.
             // If that happens, we simply shoot the object up
             if (hrTan > 0f)
             {
-                globalVelocity = (target.position + Vector3.up * 0.25f - grabbable.transform.position).normalized * 4f;
+                globalVelocity = (target.position + Vector3.up * 0.05f - grabbable.transform.position).normalized * 4f;
             }
             else
             {
@@ -450,6 +461,38 @@ namespace prvncher.XR_Interaction.Grabbity
             _launchedRigidbody = grabbable.RigidBodyComponent;
 
             //Debug.Log($"Launched {grabbable.gameObject} with velocity {globalVelocity} and launch angle {launchAngle}");
+        }
+
+        private void Launch(GrabbityGrabbable grabbable, Transform target)
+        {
+            if (_doingLaunch) return;
+            StartCoroutine(LaunchEnumerator(grabbable, target));
+        }
+
+        private bool _doingLaunch = false;
+        private IEnumerator LaunchEnumerator(GrabbityGrabbable grabbable, Transform target)
+        {
+            _doingLaunch = true;
+
+            float startTime = Time.time;
+
+            float startVerticalOffset = target.transform.position.y - grabbable.transform.position.y;
+
+            float upwardAccelScalar = 1f;
+            if (startVerticalOffset < 0)
+            {
+                upwardAccelScalar = 1 + Mathf.Clamp01(-upwardAccelScalar);
+            }
+            grabbable.RigidBodyComponent.velocity = Vector3.up * 6f * upwardAccelScalar;
+
+            while (grabbable.transform.position.y < target.transform.position.y + 0.5f && (Time.time - startTime) < 0.5f)
+            {
+                yield return null;
+            }
+
+            DoLaunch(grabbable, target);
+
+            _doingLaunch = false;
         }
     }
 }
