@@ -208,6 +208,8 @@ namespace prvncher.XR_Interaction.Grabbity
         }
 
         private float _lastFlickTime = 0f;
+        private float TimeInFlight => Time.time - _lastFlickTime;
+
         private void Update()
         {
             if (GripBased)
@@ -219,14 +221,10 @@ namespace prvncher.XR_Interaction.Grabbity
                     ResetSelection();
                     return;
                 }
-                
+
                 if (!PrimaryIsGripping)
                 {
                     Selection();
-                }
-                else
-                {
-                    HomeToHand();
                 }
             }
             else
@@ -252,6 +250,11 @@ namespace prvncher.XR_Interaction.Grabbity
                     }
                 }
             }
+        }
+
+        private void FixedUpdate()
+        {
+            AdjustCourse();
         }
 
         private static Rigidbody _launchedRigidbody = null;
@@ -311,105 +314,62 @@ namespace prvncher.XR_Interaction.Grabbity
                 }
             }
         }
-        /*
-        private void HomeToHand()
+
+        private void AdjustCourse()
         {
-            if ((Time.time - _lastFlickTime) < 0.25f) return;
-            if (_selectedGrabbable == null) return;
+            // Wait a few frames after launch to do anything
+            if (_launchedRigidbody == null || TimeInFlight < 0.05f) return;
 
-            Vector3 handPose = _rightHandIsPrimary ? _rightHand.position : _leftHand.position;
-            Vector3 toHand = handPose - _selectedGrabbable.transform.position;
+            Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
+            Vector3 toHand = handTransform.position - _launchedRigidbody.transform.position;
+            float toHandMagnitude = toHand.magnitude;
 
-            // Ensure the object is front of the user - if not we stop what we're doing
-            if (Vector3.Dot(toHand, _headpose.forward) < 0)
+            // if object is inert or out of bounds, we clear it out
+            if (toHandMagnitude > 50f || _launchedRigidbody.velocity.magnitude < 0.02f)
             {
-                ResetSelection();
+                _launchedRigidbody = null;
                 return;
             }
 
-            float toHandMagnitude = toHand.magnitude;
-            Vector3 currentVelocity = _selectedGrabbable.RigidBodyComponent.velocity;
+            Vector3 currentVelocity = _launchedRigidbody.velocity;
+            float currentVelocityMagnitude = currentVelocity.magnitude;
 
-            Vector3 newVelocityDirection = currentVelocity;
-            if (toHandMagnitude < 0.75f)
+            bool upwardsTrajectory = Vector3.Dot(Vector3.Project(currentVelocity.normalized, Vector3.up), Physics.gravity.normalized) < 0;
+            if (upwardsTrajectory)
             {
-                // Dampen velocity
-                newVelocityDirection -= (0.05f * Time.deltaTime * toHand);
+                BoostLaunch(currentVelocity, currentVelocityMagnitude, toHand, toHandMagnitude);
             }
-
-            _selectedGrabbable.RigidBodyComponent.velocity = newVelocityDirection;
+            else
+            {
+                HomeToHand(currentVelocity, currentVelocityMagnitude, toHand, toHandMagnitude);
+            }
         }
-        */
 
-        private void HomeToHand()
+        private void BoostLaunch(Vector3 velocity, float velocityMagnitude, Vector3 toHand, float toHandMagnitude)
         {
-            // Wait a few frames after launch to do anything
-            if (Time.time - _lastFlickTime < 0.25f) return;
-            if (_launchedRigidbody != null)
-            {
-                Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
-                Vector3 toHand = handTransform.position - _launchedRigidbody.transform.position;
-                float toHandMagnitude = toHand.magnitude;
-                // if object is inert or out of bounds, we clear it out
-                if (toHandMagnitude > 50f || _launchedRigidbody.velocity.magnitude < 0.2f)
-                {
-                    _launchedRigidbody = null;
-                    return;
-                }
+            //_launchedRigidbody.velocity += Vector3.up * Time.fixedDeltaTime;
+        }
 
-                if (toHandMagnitude > 2f || toHandMagnitude < 0.25f) return;
+        private void HomeToHand(Vector3 velocity, float velocityMagnitude, Vector3 toHand, float toHandMagnitude)
+        {
+            // If object is further than 4m, or closer than 15cm, do nothing.
+            if (toHandMagnitude > 4f || toHandMagnitude < 0.15f) return;
 
-                Vector3 currentVelocity = _launchedRigidbody.velocity;
-                Vector3 adjustedVelocity = currentVelocity + ((toHand.normalized * currentVelocity.magnitude - currentVelocity) * (0.1f * Time.deltaTime));
-                _launchedRigidbody.velocity = adjustedVelocity;
-            }
+            Vector3 slowDownForce = -velocity;
+            Vector3 toHandForce = toHand.normalized * velocityMagnitude * 0.5f;
+            Vector3 dampeningForce = slowDownForce + toHandForce;
+
+            _launchedRigidbody.velocity += dampeningForce * Time.fixedDeltaTime;
         }
 
         private void ResetSelection()
         {
             _objectInFlight = false;
             CurrentGrabbable = null;
-            //_launchedRigidbody = null;
-        }
-
-        private void OnPrimaryGripReleased()
-        {
-            if (CurrentGrabbable == null || _objectInFlight) return;
-
-            Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
-            Vector3 toHand = handTransform.position - CurrentGrabbable.transform.position;
-
-            Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
-            //if (Vector3.Dot(handVelocity.normalized, toHand.normalized) < 0) return;
-
-            if (handVelocity.magnitude < 0.5f)
-            {
-                return;
-            }
-
-            Launch(CurrentGrabbable, handTransform);
-
-            _objectInFlight = true;
-            _lastFlickTime = Time.time;
         }
 
         private void Launch(GrabbityGrabbable grabbable, Transform target)
         {
-            // offset calculations
-            float distance = Vector3.Distance(grabbable.transform.position, target.transform.position);
-
-            if (distance < 4.0f)
-            {
-                _launchOffsetY = 0.75f;
-            }
-            else
-            {
-                _launchOffsetY = 0.5f;
-            }
-            
-            _launchOffset = new Vector3(0, _launchOffsetY, 0);
-
-            target.transform.position += _launchOffset;
             Transform grabbableTransform = grabbable.transform;
 
             // think of it as top-down view of vectors: 
@@ -418,36 +378,26 @@ namespace prvncher.XR_Interaction.Grabbity
             Vector3 targetXZPos = new Vector3(target.position.x, 0.0f, target.position.z);
 
             // rotate the object to face the target
-
-            Quaternion lookRotation = Quaternion.LookRotation(targetXZPos - grabbableTransform.position);
-
-            //grabbableTransform.LookAt(targetXZPos);
+            Quaternion lookRotation = Quaternion.LookRotation(targetXZPos - projectileXZPos);
 
             // shorthands for the formula
             float R = Vector3.Distance(projectileXZPos, targetXZPos);
 
-            // If the object is very close by, we make the launch angle more aggressive
-            float launchAngle = Mathf.Lerp(45f, 75f, 1f - Mathf.Clamp01(R * 2f));
-
             float G = Physics.gravity.y;
-            float tanAlpha = Mathf.Tan(launchAngle * Mathf.Deg2Rad);
+            float tanAlpha = Mathf.Tan(55f * Mathf.Deg2Rad);
             float H = target.position.y + 0.25f - grabbableTransform.position.y;
 
             // calculate the local space components of the velocity 
             // required to land the projectile on the target object 
-
             float grr = G * R * R;
             float hrTan = (H - R * tanAlpha);
             //Debug.Log($"{VzSquarred} {G * R * R} {H - R * tanAlpha}");
 
-
+            // if hrTan is > 0f, something bad has happened, and instead of exploding from taking the square root of a negative number, we shoot towards the hand
             Vector3 globalVelocity;
-
-            // if hrTan is > 0f, it means that the target is almost straight above the projectile.
-            // If that happens, we simply shoot the object up
             if (hrTan > 0f)
             {
-                globalVelocity = (target.position + Vector3.up * 0.25f - grabbable.transform.position).normalized * 4f;
+                globalVelocity = (target.position - grabbable.transform.position + Vector3.up).normalized * 4f;
             }
             else
             {
@@ -465,6 +415,24 @@ namespace prvncher.XR_Interaction.Grabbity
             _launchedRigidbody = grabbable.RigidBodyComponent;
 
             //Debug.Log($"Launched {grabbable.gameObject} with velocity {globalVelocity} and launch angle {launchAngle}");
+        }
+        private void OnPrimaryGripReleased()
+        {
+            if (CurrentGrabbable == null || _objectInFlight) return;
+
+            Transform handTransform = _rightHandIsPrimary ? _rightHand : _leftHand;
+            Vector3 toHand = handTransform.position - CurrentGrabbable.transform.position;
+
+            Vector3 handVelocity = _rightHandIsPrimary ? _rightHandVelocity : _leftHandVelocity;
+            if (handVelocity.magnitude < 0.5f)
+            {
+                return;
+            }
+
+            Launch(CurrentGrabbable, handTransform);
+
+            _objectInFlight = true;
+            _lastFlickTime = Time.time;
         }
     }
 }
