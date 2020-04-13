@@ -72,6 +72,7 @@ namespace prvncher.XR_Interaction.Grabbity
 
         bool _rightTriggerPressed;
         bool _leftTriggerPressed;
+        Vector3 _launchOffset = new Vector3(0.0f, 0.5f, 0.0f);
 
         public bool GripBased = true;
 
@@ -393,7 +394,7 @@ namespace prvncher.XR_Interaction.Grabbity
 
         private void Launch(GrabbityGrabbable grabbable, Transform target)
         {
-            target.transform.position += Vector3.up;
+            target.transform.position += _launchOffset;
             Transform grabbableTransform = grabbable.transform;
 
             // think of it as top-down view of vectors: 
