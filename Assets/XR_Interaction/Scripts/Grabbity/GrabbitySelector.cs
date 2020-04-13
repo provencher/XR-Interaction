@@ -73,6 +73,7 @@ namespace prvncher.XR_Interaction.Grabbity
         bool _rightTriggerPressed;
         bool _leftTriggerPressed;
         Vector3 _launchOffset = new Vector3(0.0f, 0.5f, 0.0f);
+        float _launchOffsetY = 0.5f;
 
         public bool GripBased = true;
 
@@ -394,6 +395,16 @@ namespace prvncher.XR_Interaction.Grabbity
 
         private void Launch(GrabbityGrabbable grabbable, Transform target)
         {
+            // offset calculations
+            float distance = Vector3.Distance(grabbable.transform.position, target.transform.position);
+
+            if (distance < 3.0f)
+            {
+                _launchOffsetY = 0.75f;
+            }
+            
+            _launchOffset = new Vector3(0, _launchOffsetY, 0);
+
             target.transform.position += _launchOffset;
             Transform grabbableTransform = grabbable.transform;
 

@@ -366,6 +366,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!4 &862929008 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7559847051155244818, guid: b602c227d1c7e34478246975c1dfba49,
+    type: 3}
+  m_PrefabInstance: {fileID: 7559847050902601283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &914383685
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1326,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1266562584}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1312140987
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1312140988}
+  m_Layer: 0
+  m_Name: GrabTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1312140988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312140987}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.13, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4645730838495630}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1458322688
 GameObject:
   m_ObjectHideFlags: 0
@@ -2080,6 +2116,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2061169061}
   m_Mesh: {fileID: 4300000, guid: 9d0d902f71acfe646a46cb625f815a49, type: 3}
+--- !u!4 &2135924342 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7559847051200883767, guid: b602c227d1c7e34478246975c1dfba49,
+    type: 3}
+  m_PrefabInstance: {fileID: 7559847050902601283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0
@@ -2155,7 +2197,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 6.6119e-41, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 4.501e-42, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -2231,10 +2273,10 @@ GameObject:
   - component: {fileID: 33367184338962800}
   - component: {fileID: 23987358165453488}
   - component: {fileID: 1212596423539687}
-  - component: {fileID: 1212596423539686}
   - component: {fileID: 1212596423539689}
   - component: {fileID: 1212596423539688}
   - component: {fileID: 1212596423539685}
+  - component: {fileID: 1212596423539686}
   m_Layer: 0
   m_Name: Paint 1G Lid
   m_TagString: Untagged
@@ -2265,7 +2307,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1212596423539684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52080fca957b627488743d6cfb243d24, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 248681696}
@@ -2370,7 +2412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6f4e8c9525eb0418549bbe59ccadc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlightColor: {r: 0, g: 1, b: 1, a: 1}
+  _highlightColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &1218026470195376
 GameObject:
   m_ObjectHideFlags: 0
@@ -2770,10 +2812,10 @@ GameObject:
   - component: {fileID: 33482302768704232}
   - component: {fileID: 23463846714058914}
   - component: {fileID: 1447662173815674}
-  - component: {fileID: 1447662173815673}
   - component: {fileID: 1447662173815677}
   - component: {fileID: 1447662173815676}
   - component: {fileID: 1447662173815675}
+  - component: {fileID: 1447662173815673}
   m_Layer: 0
   m_Name: Brush
   m_TagString: Untagged
@@ -2790,7 +2832,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1447662173815672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52080fca957b627488743d6cfb243d24, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 248681696}
@@ -2823,7 +2865,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_CustomReticle: {fileID: 0}
-  m_AttachTransform: {fileID: 0}
+  m_AttachTransform: {fileID: 1312140988}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
   m_TrackPosition: 1
@@ -2909,7 +2951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6f4e8c9525eb0418549bbe59ccadc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlightColor: {r: 0, g: 1, b: 1, a: 1}
+  _highlightColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &1467781690138416
 GameObject:
   m_ObjectHideFlags: 0
@@ -2922,10 +2964,10 @@ GameObject:
   - component: {fileID: 33644865886041626}
   - component: {fileID: 23051422920405670}
   - component: {fileID: 1467781690138418}
-  - component: {fileID: 1467781690138417}
   - component: {fileID: 1467781690138421}
   - component: {fileID: 1467781690138420}
   - component: {fileID: 1467781690138419}
+  - component: {fileID: 1467781690138417}
   m_Layer: 0
   m_Name: Paint 1G Bucket
   m_TagString: Untagged
@@ -2942,7 +2984,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1467781690138416}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52080fca957b627488743d6cfb243d24, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 248681696}
@@ -3061,7 +3103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6f4e8c9525eb0418549bbe59ccadc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlightColor: {r: 0, g: 1, b: 1, a: 1}
+  _highlightColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &1470752851791564
 GameObject:
   m_ObjectHideFlags: 0
@@ -3550,10 +3592,10 @@ GameObject:
   - component: {fileID: 33009518960564148}
   - component: {fileID: 23910509487175628}
   - component: {fileID: 1776058156694295}
-  - component: {fileID: 1776058156694294}
   - component: {fileID: 1776058156694297}
   - component: {fileID: 1776058156694296}
   - component: {fileID: 1776058156694293}
+  - component: {fileID: 1776058156694294}
   m_Layer: 0
   m_Name: Paint 5G Bucket
   m_TagString: Untagged
@@ -3584,7 +3626,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1776058156694292}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52080fca957b627488743d6cfb243d24, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 248681696}
@@ -3689,7 +3731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6f4e8c9525eb0418549bbe59ccadc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highlightColor: {r: 0, g: 1, b: 1, a: 1}
+  _highlightColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
 --- !u!1 &1808137150833076
 GameObject:
   m_ObjectHideFlags: 0
@@ -4496,7 +4538,8 @@ Transform:
   m_LocalRotation: {x: 0.44850776, y: -0.5435191, z: -0.5607513, w: -0.4347249}
   m_LocalPosition: {x: -0.0669, y: 0.0101, z: -0.2977}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1312140988}
   m_Father: {fileID: 4276756324483034}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -91.787994, y: -257.308, z: 0}
@@ -6093,7 +6136,7 @@ Light:
   m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: -9.0709815e+29, z: 4.5904e-41, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 6.653e-42, z: 0, w: -1}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -6252,10 +6295,62 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.35
       objectReference: {fileID: 0}
+    - target: {fileID: 7559847050563593498, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_ModelPrefab
+      value: 
+      objectReference: {fileID: 2967307112082874050, guid: db35aabe50fc7dc4897a014f75e6c304,
+        type: 3}
+    - target: {fileID: 7559847050563593498, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_ModelTransform
+      value: 
+      objectReference: {fileID: 2135924342}
+    - target: {fileID: 7559847051155244818, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051155244818, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051155244818, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051200883767, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051200883767, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559847051200883767, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -180
+      objectReference: {fileID: 0}
     - target: {fileID: 7559847051477665364, guid: b602c227d1c7e34478246975c1dfba49,
         type: 3}
       propertyPath: m_Radius
       value: 0.35
       objectReference: {fileID: 0}
+    - target: {fileID: 7559847051477665370, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_ModelPrefab
+      value: 
+      objectReference: {fileID: 8636367063916727715, guid: edb3172f727304946858fc59d2b7a4f9,
+        type: 3}
+    - target: {fileID: 7559847051477665370, guid: b602c227d1c7e34478246975c1dfba49,
+        type: 3}
+      propertyPath: m_ModelTransform
+      value: 
+      objectReference: {fileID: 862929008}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b602c227d1c7e34478246975c1dfba49, type: 3}
