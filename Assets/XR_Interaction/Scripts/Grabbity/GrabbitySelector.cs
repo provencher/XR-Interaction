@@ -403,6 +403,9 @@ namespace prvncher.XR_Interaction.Grabbity
             {
                 _launchOffsetY = 0.75f;
             }
+
+            // Remove launch offset - HACK
+            _launchOffsetY = 0f;
             
             _launchOffset = new Vector3(0, _launchOffsetY, 0);
 
