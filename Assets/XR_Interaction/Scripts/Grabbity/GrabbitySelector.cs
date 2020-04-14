@@ -384,8 +384,8 @@ namespace prvncher.XR_Interaction.Grabbity
             float R = Vector3.Distance(projectileXZPos, targetXZPos);
 
             float G = Physics.gravity.y;
-            float tanAlpha = Mathf.Tan(55f * Mathf.Deg2Rad);
-            float H = target.position.y + 0.25f - grabbableTransform.position.y;
+            float tanAlpha = Mathf.Tan(40f * Mathf.Deg2Rad);
+            float H = target.position.y + 0.2f - grabbableTransform.position.y;
 
             // calculate the local space components of the velocity 
             // required to land the projectile on the target object 
@@ -413,6 +413,7 @@ namespace prvncher.XR_Interaction.Grabbity
             // launch the object by setting its initial velocity and flipping its state
             grabbable.RigidBodyComponent.velocity = globalVelocity;
             _launchedRigidbody = grabbable.RigidBodyComponent;
+            _launchedRigidbody.angularVelocity = globalVelocity;
 
             //Debug.Log($"Launched {grabbable.gameObject} with velocity {globalVelocity} and launch angle {launchAngle}");
         }
